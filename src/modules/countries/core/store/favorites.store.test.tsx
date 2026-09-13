@@ -24,7 +24,7 @@ function renderStore() {
 describe("favorites store", () => {
   it("throws when used outside its provider", () => {
     expect(() => renderHook(() => useFavoritesStore())).toThrow(
-      "This hook must be used within its matching Provider.",
+      "useFavoritesContext must be used within a FavoritesProvider.",
     );
   });
 
