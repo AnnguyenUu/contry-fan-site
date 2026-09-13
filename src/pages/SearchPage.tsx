@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useSearchCountries } from "@/modules/countries/core/handlers/useSearchCountries";
 import { useFavoritesStore } from "@/modules/countries/core/store/favorites.store";
 import { CountryGrid } from "@/modules/countries/presentation/CountryGrid";
+import { CountryGridSkeleton } from "@/modules/countries/presentation/CountryGridSkeleton";
 import { SearchBar } from "@/modules/countries/presentation/SearchBar";
 import { EmptyState } from "@/shared/presentation/EmptyState";
 import { ErrorState } from "@/shared/presentation/ErrorState";
-import { LoadingState } from "@/shared/presentation/LoadingState";
 import { useDebouncedValue } from "@/shared/lib/useDebouncedValue";
 
 export function SearchPage() {
@@ -17,7 +17,11 @@ export function SearchPage() {
 
   function renderResults() {
     if (isLoading) {
-      return <LoadingState label={`Searching for "${debouncedQuery}"…`} />;
+      return (
+        <output aria-label={`Searching for "${debouncedQuery}"`} className="block">
+          <CountryGridSkeleton />
+        </output>
+      );
     }
     if (isError) {
       return (

@@ -2,9 +2,9 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { useCountryDetails } from "@/modules/countries/core/handlers/useCountryDetails";
 import { useFavoritesStore } from "@/modules/countries/core/store/favorites.store";
+import { CountryDetailSkeleton } from "@/modules/countries/presentation/CountryDetailSkeleton";
 import { FavoriteButton } from "@/modules/countries/presentation/FavoriteButton";
 import { ErrorState } from "@/shared/presentation/ErrorState";
-import { LoadingState } from "@/shared/presentation/LoadingState";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 
@@ -22,7 +22,9 @@ export function CountryDetailPage() {
   if (isLoading) {
     return (
       <CountryDetailPageWrapper>
-        <LoadingState label="Loading country…" />;
+        <output aria-label="Loading country" className="block">
+          <CountryDetailSkeleton />
+        </output>
       </CountryDetailPageWrapper>
     );
   }
