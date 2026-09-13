@@ -48,7 +48,38 @@ The historically well-known, free, keyless `restcountries.com/v3.1/*` API is dep
 | `npm run test` | `vitest run` — single pass, CI-friendly |
 | `npm run test:watch` | `vitest` in watch mode |
 
-A **pre-commit hook** (Husky + lint-staged) runs `oxlint --deny-warnings` against staged files on every commit — see [Linting & the pre-commit hook](#linting--the-pre-commit-hook). A GitHub Actions workflow (`.github/workflows/ci.yml`) runs lint, test, and build on every push/PR, then — only once that passes — deploys: a Preview deployment for pull requests, a Production deployment for pushes to `main`. It authenticates to Vercel via the `VERCEL_TOKEN`/`VERCEL_ORG_ID`/`VERCEL_PROJECT_ID` repository secrets and deploys with `vercel build` + `vercel deploy --prebuilt`, the same commands used to deploy this project manually.
+A **pre-commit hook** (Husky + lint-staged) runs `oxlint --deny-warnings` against staged files on every commit — see [Linting & the pre-commit hook](#linting--the-pre-commit-hook). A GitHub Actions workflow runs lint, test, build, and deploy on every push/PR — see [CI/CD](#cicd).
+
+## CI/CD
+
+`.github/workflows/ci.yml` runs on every push to `main` and every pull request:
+
+1. **`build`** — `npm ci`, `npm run lint`, `npm run test`, `npm run build`. Everything else is gated behind this passing.
+2. **`deploy-preview`** (pull requests only) — deploys a Preview build.
+3. **`deploy-production`** (pushes to `main` only) — deploys to production.
+
+Both deploy jobs use the Vercel CLI directly — `vercel pull` → `vercel build` → `vercel deploy --prebuilt` — the same commands used to deploy this project by hand, authenticated via three repository secrets.
+
+### Required repository secrets
+
+Set these at Repo → Settings → Secrets and variables → Actions → New repository secret:
+
+| Secret | Value | Where to get it |
+|---|---|---|
+| `VERCEL_TOKEN` | a Vercel personal access token | vercel.com/account/tokens — create one with **Scope** set to the team that owns the Vercel project (not your personal account, if the project lives under a team) |
+| `VERCEL_ORG_ID` | `team_...` | `.vercel/project.json`, generated locally by `vercel link` |
+| `VERCEL_PROJECT_ID` | `prj_...` | same file |
+
+To wire up a fork against your own Vercel project:
+
+```bash
+npm install -g vercel
+vercel login
+vercel link                # writes .vercel/project.json
+cat .vercel/project.json   # copy orgId -> VERCEL_ORG_ID, projectId -> VERCEL_PROJECT_ID
+```
+
+**A token-creation gotcha we hit standing this up**: a CLI session authenticated via OAuth browser login (`vercel login`) cannot mint further tokens — `vercel tokens add` fails with `403 Cannot create tokens for this app`. That's an intentional Vercel restriction (an OAuth-authorized session can't create new long-lived credentials), not a bug. Create `VERCEL_TOKEN` from the web dashboard (vercel.com/account/tokens) instead.
 
 ## Architecture
 
