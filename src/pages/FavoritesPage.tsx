@@ -1,7 +1,7 @@
 import { useMemo } from "react";
-import { useFavoritesStore } from "@/modules/movies/core/store/favorites.store";
-import { CreateGroupForm } from "@/modules/movies/presentation/CreateGroupForm";
-import { GroupSection } from "@/modules/movies/presentation/GroupSection";
+import { useFavoritesStore } from "@/modules/countries/core/store/favorites.store";
+import { CreateGroupForm } from "@/modules/countries/presentation/CreateGroupForm";
+import { GroupSection } from "@/modules/countries/presentation/GroupSection";
 import { EmptyState } from "@/shared/presentation/EmptyState";
 
 export function FavoritesPage() {
@@ -12,7 +12,7 @@ export function FavoritesPage() {
   if (favorites.length === 0 && groups.length === 0) {
     return (
       <EmptyState>
-        You haven't favourited any movies yet — search for a movie and tap the heart icon to add one.
+        You haven't favourited any countries yet — search for a country and tap the heart icon to add one.
       </EmptyState>
     );
   }

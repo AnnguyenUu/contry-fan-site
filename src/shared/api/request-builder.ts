@@ -45,8 +45,8 @@ class RequestBuilder<T = unknown> {
       if (error instanceof AxiosError) {
         throw new UpstreamApiError(
           error.response?.status === 401
-            ? "TMDB rejected the request — check that API_KEY is set in .env."
-            : "Could not reach the movie database. Please try again.",
+            ? "RestCountries rejected the request — check that API_KEY is set in .env."
+            : "Could not reach the country database. Please try again.",
           error.response?.status,
         );
       }

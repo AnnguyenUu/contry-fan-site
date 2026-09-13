@@ -1,14 +1,12 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 
-const TMDB_BASE_URL = "https://api.themoviedb.org/3";
-const PROXY_PREFIX = "/api/movies";
+const RESTCOUNTRIES_BASE_URL = "https://api.restcountries.com/countries/v5";
+const PROXY_PREFIX = "/api/countries";
 
 /**
  * Mirrors vite.config.ts's dev-server proxy exactly (same prefix stripped,
  * same upstream, same Bearer-header injection) so the repository layer's
- * requests to "/api/movies/*" behave identically in dev and once deployed —
- * the one architectural gap the reference project (Dog Finder) had called
- * out as unresolved.
+ * requests to "/api/countries/*" behave identically in dev and once deployed.
  */
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   if (req.method !== "GET") {
@@ -28,7 +26,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   const rawUrl = req.url ?? "";
   const upstreamPath = rawUrl.startsWith(PROXY_PREFIX) ? rawUrl.slice(PROXY_PREFIX.length) : rawUrl;
 
-  const upstreamResponse = await fetch(`${TMDB_BASE_URL}${upstreamPath}`, {
+  const upstreamResponse = await fetch(`${RESTCOUNTRIES_BASE_URL}${upstreamPath}`, {
     headers: { Authorization: `Bearer ${apiKey}`, Accept: "application/json" },
   });
 

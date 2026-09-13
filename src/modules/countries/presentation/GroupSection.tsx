@@ -1,14 +1,14 @@
 import { AnimatePresence } from "framer-motion";
-import type { FavoriteMovie, Group } from "../domain/movie.types";
-import { FavoriteMovieCard } from "./FavoriteMovieCard";
+import type { FavoriteCountry, Group } from "../domain/country.types";
+import { FavoriteCountryCard } from "./FavoriteCountryCard";
 
 interface GroupSectionProps {
   title: string;
   group: Group | null;
-  favorites: FavoriteMovie[];
+  favorites: FavoriteCountry[];
   groups: Group[];
-  onAssignGroup: (movieId: number, groupId: string | null) => void;
-  onRemoveFavorite: (movieId: number) => void;
+  onAssignGroup: (countryCode: string, groupId: string | null) => void;
+  onRemoveFavorite: (countryCode: string) => void;
   onDeleteGroup?: (groupId: string) => void;
 }
 
@@ -39,17 +39,17 @@ export function GroupSection({
         ) : null}
       </div>
       {favorites.length === 0 ? (
-        <p className="text-sm text-slate-400">No movies in this group yet.</p>
+        <p className="text-sm text-slate-400">No countries in this group yet.</p>
       ) : (
         <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence initial={false}>
             {favorites.map((favorite) => (
-              <FavoriteMovieCard
-                key={favorite.movieId}
+              <FavoriteCountryCard
+                key={favorite.countryCode}
                 favorite={favorite}
                 groups={groups}
-                onAssignGroup={(groupId) => onAssignGroup(favorite.movieId, groupId)}
-                onRemove={() => onRemoveFavorite(favorite.movieId)}
+                onAssignGroup={(groupId) => onAssignGroup(favorite.countryCode, groupId)}
+                onRemove={() => onRemoveFavorite(favorite.countryCode)}
               />
             ))}
           </AnimatePresence>

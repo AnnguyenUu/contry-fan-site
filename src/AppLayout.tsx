@@ -13,7 +13,7 @@ export function AppLayout() {
       <header className="border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <NavLink to="/" className="text-lg font-bold" end>
-            🎬 Movie Fan Site
+            🌍 Country Fan Site
           </NavLink>
           <nav aria-label="Primary" className="flex gap-2">
             <NavLink to="/" className={navLinkClassName} end>

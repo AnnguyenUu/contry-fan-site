@@ -1,15 +1,18 @@
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { MovieSummary } from "../../domain/movie.types";
+import type { CountrySummary } from "../../domain/country.types";
 import { FavoritesStoreProvider, useFavoritesStore } from "./favorites.store";
 
-const movie: MovieSummary = {
-  id: 1,
-  title: "Inception",
-  overview: "A thief who steals corporate secrets.",
-  posterPath: "/poster.jpg",
-  releaseYear: "2010",
-  voteAverage: 8.8,
+const country: CountrySummary = {
+  code: "CAN",
+  commonName: "Canada",
+  officialName: "Canada",
+  flagEmoji: "🇨🇦",
+  flagPngUrl: "https://flags.example.com/ca.png",
+  region: "Americas",
+  subregion: "North America",
+  capital: "Ottawa",
+  population: 38_000_000,
 };
 
 function renderStore() {
@@ -28,23 +31,23 @@ describe("favorites store", () => {
   it("adds and removes a favorite via toggleFavorite", () => {
     const { result } = renderStore();
 
-    expect(result.current.isFavorite(movie.id)).toBe(false);
+    expect(result.current.isFavorite(country.code)).toBe(false);
 
-    act(() => result.current.toggleFavorite(movie));
-    expect(result.current.isFavorite(movie.id)).toBe(true);
+    act(() => result.current.toggleFavorite(country));
+    expect(result.current.isFavorite(country.code)).toBe(true);
     expect(result.current.favorites).toHaveLength(1);
     expect(result.current.favorites[0].groupId).toBeNull();
 
-    act(() => result.current.toggleFavorite(movie));
-    expect(result.current.isFavorite(movie.id)).toBe(false);
+    act(() => result.current.toggleFavorite(country));
+    expect(result.current.isFavorite(country.code)).toBe(false);
     expect(result.current.favorites).toHaveLength(0);
   });
 
   it("deletes a favorite directly", () => {
     const { result } = renderStore();
 
-    act(() => result.current.toggleFavorite(movie));
-    act(() => result.current.deleteFavorite(movie.id));
+    act(() => result.current.toggleFavorite(country));
+    act(() => result.current.deleteFavorite(country.code));
 
     expect(result.current.favorites).toHaveLength(0);
   });
@@ -52,13 +55,13 @@ describe("favorites store", () => {
   it("creates a group and assigns a favorite to it", () => {
     const { result } = renderStore();
 
-    act(() => result.current.toggleFavorite(movie));
-    act(() => result.current.createGroup("Sci-fi"));
+    act(() => result.current.toggleFavorite(country));
+    act(() => result.current.createGroup("Places to visit"));
 
     const group = result.current.groups[0];
-    expect(group.name).toBe("Sci-fi");
+    expect(group.name).toBe("Places to visit");
 
-    act(() => result.current.assignToGroup(movie.id, group.id));
+    act(() => result.current.assignToGroup(country.code, group.id));
     expect(result.current.favorites[0].groupId).toBe(group.id);
   });
 
@@ -71,10 +74,10 @@ describe("favorites store", () => {
   it("un-assigns favorites back to ungrouped when their group is deleted", () => {
     const { result } = renderStore();
 
-    act(() => result.current.toggleFavorite(movie));
-    act(() => result.current.createGroup("Sci-fi"));
+    act(() => result.current.toggleFavorite(country));
+    act(() => result.current.createGroup("Places to visit"));
     const group = result.current.groups[0];
-    act(() => result.current.assignToGroup(movie.id, group.id));
+    act(() => result.current.assignToGroup(country.code, group.id));
 
     act(() => result.current.deleteGroup(group.id));
 

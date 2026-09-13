@@ -18,13 +18,13 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       proxy: {
-        // Mirrors api/movies/[...path].ts (the production Vercel function) exactly,
-        // so the repository layer never knows whether it's talking to this dev
-        // proxy or the deployed serverless function.
-        "/api/movies": {
-          target: "https://api.themoviedb.org",
+        // Mirrors api/countries/[...path].ts (the production Vercel function)
+        // exactly, so the repository layer never knows whether it's talking to
+        // this dev proxy or the deployed serverless function.
+        "/api/countries": {
+          target: "https://api.restcountries.com",
           changeOrigin: true,
-          rewrite: (requestPath) => requestPath.replace(/^\/api\/movies/, "/3"),
+          rewrite: (requestPath) => requestPath.replace(/^\/api\/countries/, "/countries/v5"),
           headers: env.API_KEY ? { Authorization: `Bearer ${env.API_KEY}` } : undefined,
         },
       },

@@ -1,16 +1,16 @@
-import type { Group } from "../domain/movie.types";
+import type { Group } from "../domain/country.types";
 
 interface GroupSelectProps {
-  movieTitle: string;
+  countryName: string;
   groups: Group[];
   value: string | null;
   onChange: (groupId: string | null) => void;
 }
 
-export function GroupSelect({ movieTitle, groups, value, onChange }: GroupSelectProps) {
+export function GroupSelect({ countryName, groups, value, onChange }: GroupSelectProps) {
   return (
     <label className="flex flex-col gap-1 text-xs text-slate-500 dark:text-slate-400">
-      <span className="sr-only">Group for {movieTitle}</span>
+      <span className="sr-only">Group for {countryName}</span>
       <select
         value={value ?? ""}
         onChange={(event) => onChange(event.target.value || null)}

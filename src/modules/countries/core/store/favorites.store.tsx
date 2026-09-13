@@ -3,10 +3,10 @@ import { context } from "@/shared/lib/context";
 import { generateId } from "@/shared/lib/generateId";
 import { useLocalStorage } from "@/shared/lib/useLocalStorage";
 import { FAVORITES_STORAGE_KEY } from "../../configuration/storage-keys";
-import type { FavoriteMovie, Group, MovieSummary } from "../../domain/movie.types";
+import type { CountrySummary, FavoriteCountry, Group } from "../../domain/country.types";
 
 interface FavoritesState {
-  favorites: FavoriteMovie[];
+  favorites: FavoriteCountry[];
   groups: Group[];
 }
 
@@ -16,23 +16,27 @@ function useFavoritesStoreValue() {
   const [state, setState] = useLocalStorage<FavoritesState>(FAVORITES_STORAGE_KEY, INITIAL_STATE);
 
   const isFavorite = useCallback(
-    (movieId: number) => state.favorites.some((favorite) => favorite.movieId === movieId),
+    (countryCode: string) => state.favorites.some((favorite) => favorite.countryCode === countryCode),
     [state.favorites],
   );
 
   const toggleFavorite = useCallback(
-    (movie: MovieSummary) => {
+    (country: CountrySummary) => {
       setState((previous) => {
-        const alreadyFavorited = previous.favorites.some((favorite) => favorite.movieId === movie.id);
+        const alreadyFavorited = previous.favorites.some((favorite) => favorite.countryCode === country.code);
         if (alreadyFavorited) {
-          return { ...previous, favorites: previous.favorites.filter((favorite) => favorite.movieId !== movie.id) };
+          return {
+            ...previous,
+            favorites: previous.favorites.filter((favorite) => favorite.countryCode !== country.code),
+          };
         }
 
-        const favorite: FavoriteMovie = {
-          movieId: movie.id,
-          title: movie.title,
-          posterPath: movie.posterPath,
-          releaseYear: movie.releaseYear,
+        const favorite: FavoriteCountry = {
+          countryCode: country.code,
+          commonName: country.commonName,
+          flagEmoji: country.flagEmoji,
+          flagPngUrl: country.flagPngUrl,
+          region: country.region,
           groupId: null,
           addedAt: new Date().toISOString(),
         };
@@ -43,10 +47,10 @@ function useFavoritesStoreValue() {
   );
 
   const deleteFavorite = useCallback(
-    (movieId: number) => {
+    (countryCode: string) => {
       setState((previous) => ({
         ...previous,
-        favorites: previous.favorites.filter((favorite) => favorite.movieId !== movieId),
+        favorites: previous.favorites.filter((favorite) => favorite.countryCode !== countryCode),
       }));
     },
     [setState],
@@ -77,11 +81,11 @@ function useFavoritesStoreValue() {
   );
 
   const assignToGroup = useCallback(
-    (movieId: number, groupId: string | null) => {
+    (countryCode: string, groupId: string | null) => {
       setState((previous) => ({
         ...previous,
         favorites: previous.favorites.map((favorite) =>
-          favorite.movieId === movieId ? { ...favorite, groupId } : favorite,
+          favorite.countryCode === countryCode ? { ...favorite, groupId } : favorite,
         ),
       }));
     },

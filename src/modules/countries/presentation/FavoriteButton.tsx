@@ -2,17 +2,17 @@ import { motion } from "framer-motion";
 
 interface FavoriteButtonProps {
   isFavorite: boolean;
-  title: string;
+  name: string;
   onToggle: () => void;
 }
 
-export function FavoriteButton({ isFavorite, title, onToggle }: FavoriteButtonProps) {
+export function FavoriteButton({ isFavorite, name, onToggle }: FavoriteButtonProps) {
   return (
     <motion.button
       type="button"
       whileTap={{ scale: 0.85 }}
       aria-pressed={isFavorite}
-      aria-label={isFavorite ? `Remove ${title} from favourites` : `Add ${title} to favourites`}
+      aria-label={isFavorite ? `Remove ${name} from favourites` : `Add ${name} to favourites`}
       onClick={onToggle}
       className="rounded-full bg-white/90 p-2 text-red-500 shadow-sm backdrop-blur transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 dark:bg-slate-900/80 dark:hover:bg-slate-900"
     >
