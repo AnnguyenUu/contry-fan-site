@@ -14,7 +14,13 @@ cp .env.example .env   # then fill in API_KEY — see below
 npm run dev
 ```
 
-Open the printed local URL. `/` is the search page, `/favorites` is your favourites & groups, `/countries/:code` is a country's detail page.
+This starts the Vite dev server at **http://localhost:5173** (Vite prints the exact URL — use that if `5173` is already taken on your machine). Open it in a browser: `/` is the search page, `/favorites` is your favourites & groups, `/countries/:code` is a country's detail page.
+
+To stop the server: `Ctrl+C` in the terminal it's running in, or if it was started in the background, free the port with:
+
+```bash
+lsof -ti:5173 -sTCP:LISTEN | xargs kill
+```
 
 ### Environment variables
 

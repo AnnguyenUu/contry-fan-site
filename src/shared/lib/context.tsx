@@ -1,26 +1,79 @@
-import { createContext, useContext, type ReactNode } from "react";
+import {
+  createContext,
+  useContext as useReactContext,
+  type ReactNode,
+} from 'react';
 
 /**
- * Give it a hook, get back a type-safe [Provider, useContextHook] pair that
- * throws a clear error if the hook is used outside its provider — a thin
- * alternative to a full store library for state that's shared across one
- * subtree (here: the favorites/groups store shared by the movie module).
+ * Validates a PascalCase name that doesn't end with "Provider" or "Context".
  */
-export function context<Value>(useValue: () => Value) {
-  const Ctx = createContext<Value | undefined>(undefined);
+type ValidatedName<TName extends string> = TName extends ''
+  ? `Error: Name cannot be an empty string.`
+  : TName extends `${string} ${string}`
+    ? `Error: Name cannot contain spaces.`
+    : TName extends `${infer First}${string}`
+      ? First extends Uppercase<string>
+        ? TName extends
+            | `${string}Provider`
+            | `${string}Context`
+            | `${string}provider`
+            | `${string}context`
+          ? `Error: Name should not include the 'Provider' or 'Context' keyword.`
+          : TName
+        : `Error: Name must be in PascalCase (e.g., 'User', 'UserProfile').`
+      : TName;
 
-  function Provider({ children }: { children: ReactNode }) {
-    const value = useValue();
-    return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
-  }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type OneArgFn = ((props: any) => any) | (() => any);
 
-  function useContextValue(): Value {
-    const value = useContext(Ctx);
-    if (value === undefined) {
-      throw new Error("This hook must be used within its matching Provider.");
+type IsOptional<T> = undefined extends T ? true : false;
+
+/**
+ * Creates a strongly-typed React Context Provider and consumer hook.
+ *
+ * @param displayName PascalCase base name (must not end with "Provider"/"Context").
+ * @param useHook Custom hook whose return value is placed into context.
+ */
+export const context = <TName extends string, THook extends OneArgFn>(
+  displayName: ValidatedName<TName>,
+  useHook: THook,
+) => {
+  type HookData = Parameters<THook>[0];
+  type HookReturn = ReturnType<THook>;
+
+  const Context = createContext<HookReturn | null>(null);
+  Context.displayName = `${displayName}Context`;
+
+  type ProviderProps = {
+    children: ReactNode;
+  } & (HookData extends undefined
+    ? { value?: never }
+    : IsOptional<HookData> extends true
+      ? { value?: HookData }
+      : { value: HookData });
+
+  const Provider = (props: ProviderProps) => {
+    const hookArgs = 'value' in props ? props.value : undefined;
+    const hookValue = useHook(hookArgs as HookData);
+
+    return (
+      <Context.Provider value={hookValue}>{props.children}</Context.Provider>
+    );
+  };
+
+  Provider.displayName = `${displayName}Provider`;
+
+  const useContext = (): HookReturn => {
+    const context = useReactContext(Context);
+
+    if (context === null) {
+      throw new Error(
+        `use${displayName}Context must be used within a ${displayName}Provider.`,
+      );
     }
-    return value;
-  }
 
-  return [Provider, useContextValue] as const;
-}
+    return context;
+  };
+
+  return [Provider, useContext, Context] as const;
+};

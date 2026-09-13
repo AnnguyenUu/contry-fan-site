@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { countryQueryKeys } from "../../configuration/query-keys";
-import { getCountryDetails } from "../../repository/countries.repository";
+import { countryQueryKeys } from "@/modules/countries/configuration/query-keys";
+import { getCountryDetails } from "@/modules/countries/repository/countries.repository";
 
 export function useCountryDetails(code: string | undefined) {
   return useQuery({

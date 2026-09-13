@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { CountrySummary } from "../../domain/country.types";
+import type { CountrySummary } from "@/modules/countries/domain/country.types";
 import { FavoritesStoreProvider, useFavoritesStore } from "./favorites.store";
 
 const country: CountrySummary = {

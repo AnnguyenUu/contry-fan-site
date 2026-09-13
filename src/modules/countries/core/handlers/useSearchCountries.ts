@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { countryQueryKeys } from "../../configuration/query-keys";
-import { searchCountries } from "../../repository/countries.repository";
+import { countryQueryKeys } from "@/modules/countries/configuration/query-keys";
+import { searchCountries } from "@/modules/countries/repository/countries.repository";
 
 export function useSearchCountries(query: string) {
   const trimmed = query.trim();

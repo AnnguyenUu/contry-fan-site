@@ -2,8 +2,12 @@ import { useCallback, useMemo } from "react";
 import { context } from "@/shared/lib/context";
 import { generateId } from "@/shared/lib/generateId";
 import { useLocalStorage } from "@/shared/lib/useLocalStorage";
-import { FAVORITES_STORAGE_KEY } from "../../configuration/storage-keys";
-import type { CountrySummary, FavoriteCountry, Group } from "../../domain/country.types";
+import { FAVORITES_STORAGE_KEY } from "@/modules/countries/configuration/storage-keys";
+import type {
+  CountrySummary,
+  FavoriteCountry,
+  Group,
+} from "@/modules/countries/domain/country.types";
 
 interface FavoritesState {
   favorites: FavoriteCountry[];
@@ -13,21 +17,29 @@ interface FavoritesState {
 const INITIAL_STATE: FavoritesState = { favorites: [], groups: [] };
 
 function useFavoritesStoreValue() {
-  const [state, setState] = useLocalStorage<FavoritesState>(FAVORITES_STORAGE_KEY, INITIAL_STATE);
+  const [state, setState] = useLocalStorage<FavoritesState>(
+    FAVORITES_STORAGE_KEY,
+    INITIAL_STATE,
+  );
 
   const isFavorite = useCallback(
-    (countryCode: string) => state.favorites.some((favorite) => favorite.countryCode === countryCode),
+    (countryCode: string) =>
+      state.favorites.some((favorite) => favorite.countryCode === countryCode),
     [state.favorites],
   );
 
   const toggleFavorite = useCallback(
     (country: CountrySummary) => {
       setState((previous) => {
-        const alreadyFavorited = previous.favorites.some((favorite) => favorite.countryCode === country.code);
+        const alreadyFavorited = previous.favorites.some(
+          (favorite) => favorite.countryCode === country.code,
+        );
         if (alreadyFavorited) {
           return {
             ...previous,
-            favorites: previous.favorites.filter((favorite) => favorite.countryCode !== country.code),
+            favorites: previous.favorites.filter(
+              (favorite) => favorite.countryCode !== country.code,
+            ),
           };
         }
 
@@ -50,7 +62,9 @@ function useFavoritesStoreValue() {
     (countryCode: string) => {
       setState((previous) => ({
         ...previous,
-        favorites: previous.favorites.filter((favorite) => favorite.countryCode !== countryCode),
+        favorites: previous.favorites.filter(
+          (favorite) => favorite.countryCode !== countryCode,
+        ),
       }));
     },
     [setState],
@@ -62,7 +76,14 @@ function useFavoritesStoreValue() {
       if (!trimmed) return;
       setState((previous) => ({
         ...previous,
-        groups: [...previous.groups, { id: generateId(), name: trimmed, createdAt: new Date().toISOString() }],
+        groups: [
+          ...previous.groups,
+          {
+            id: generateId(),
+            name: trimmed,
+            createdAt: new Date().toISOString(),
+          },
+        ],
       }));
     },
     [setState],
@@ -73,7 +94,9 @@ function useFavoritesStoreValue() {
       setState((previous) => ({
         groups: previous.groups.filter((group) => group.id !== groupId),
         favorites: previous.favorites.map((favorite) =>
-          favorite.groupId === groupId ? { ...favorite, groupId: null } : favorite,
+          favorite.groupId === groupId
+            ? { ...favorite, groupId: null }
+            : favorite,
         ),
       }));
     },
@@ -85,7 +108,9 @@ function useFavoritesStoreValue() {
       setState((previous) => ({
         ...previous,
         favorites: previous.favorites.map((favorite) =>
-          favorite.countryCode === countryCode ? { ...favorite, groupId } : favorite,
+          favorite.countryCode === countryCode
+            ? { ...favorite, groupId }
+            : favorite,
         ),
       }));
     },
@@ -103,8 +128,20 @@ function useFavoritesStoreValue() {
       deleteGroup,
       assignToGroup,
     }),
-    [state.favorites, state.groups, isFavorite, toggleFavorite, deleteFavorite, createGroup, deleteGroup, assignToGroup],
+    [
+      state.favorites,
+      state.groups,
+      isFavorite,
+      toggleFavorite,
+      deleteFavorite,
+      createGroup,
+      deleteGroup,
+      assignToGroup,
+    ],
   );
 }
 
-export const [FavoritesStoreProvider, useFavoritesStore] = context(useFavoritesStoreValue);
+export const [FavoritesStoreProvider, useFavoritesStore] = context(
+  "Favorites",
+  useFavoritesStoreValue,
+);

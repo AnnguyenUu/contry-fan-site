@@ -1,3 +1,4 @@
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { useCountryDetails } from "@/modules/countries/core/handlers/useCountryDetails";
 import { useFavoritesStore } from "@/modules/countries/core/store/favorites.store";
@@ -14,8 +15,12 @@ export function CountryDetailPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Link to="/" className="text-sm text-indigo-600 hover:underline dark:text-indigo-400">
-        ← Back to search
+      <Link
+        to="/"
+        className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline dark:text-indigo-400"
+      >
+        <ArrowLeft aria-hidden="true" className="h-4 w-4" />
+        Back to search
       </Link>
 
       {isLoading ? (
@@ -120,9 +125,10 @@ export function CountryDetailPage() {
                 href={country.wikipediaUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm text-indigo-600 hover:underline dark:text-indigo-400"
+                className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline dark:text-indigo-400"
               >
-                Read more on Wikipedia ↗
+                Read more on Wikipedia
+                <ExternalLink aria-hidden="true" className="h-4 w-4" />
               </a>
             ) : null}
           </div>
