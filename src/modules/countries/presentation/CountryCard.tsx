@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import type { CountrySummary } from "../domain/country.types";
 import { FavoriteButton } from "./FavoriteButton";
@@ -9,7 +10,7 @@ interface CountryCardProps {
   onToggleFavorite: () => void;
 }
 
-export function CountryCard({ country, isFavorite, onToggleFavorite }: CountryCardProps) {
+export const CountryCard = memo(function CountryCard({ country, isFavorite, onToggleFavorite }: CountryCardProps) {
   return (
     <motion.li
       layout
@@ -43,4 +44,4 @@ export function CountryCard({ country, isFavorite, onToggleFavorite }: CountryCa
       </Link>
     </motion.li>
   );
-}
+});
