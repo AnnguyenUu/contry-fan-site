@@ -72,6 +72,7 @@ const CountryDetailPageWrapper = ({
     <div className="flex flex-col gap-4">
       <Link
         to="/"
+        data-testid="back-to-search-link"
         className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline dark:text-indigo-400"
       >
         <ArrowLeft aria-hidden="true" className="h-4 w-4" />
