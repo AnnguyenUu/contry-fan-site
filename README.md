@@ -48,7 +48,7 @@ The historically well-known, free, keyless `restcountries.com/v3.1/*` API is dep
 | `npm run test` | `vitest run` — single pass, CI-friendly |
 | `npm run test:watch` | `vitest` in watch mode |
 
-A **pre-commit hook** (Husky + lint-staged) runs `oxlint --deny-warnings` against staged files on every commit — see [Linting & the pre-commit hook](#linting--the-pre-commit-hook). A GitHub Actions workflow (`.github/workflows/ci.yml`) runs lint, test, and build on every push/PR.
+A **pre-commit hook** (Husky + lint-staged) runs `oxlint --deny-warnings` against staged files on every commit — see [Linting & the pre-commit hook](#linting--the-pre-commit-hook). A GitHub Actions workflow (`.github/workflows/ci.yml`) runs lint, test, and build on every push/PR, then — only once that passes — deploys: a Preview deployment for pull requests, a Production deployment for pushes to `main`. It authenticates to Vercel via the `VERCEL_TOKEN`/`VERCEL_ORG_ID`/`VERCEL_PROJECT_ID` repository secrets and deploys with `vercel build` + `vercel deploy --prebuilt`, the same commands used to deploy this project manually.
 
 ## Architecture
 
