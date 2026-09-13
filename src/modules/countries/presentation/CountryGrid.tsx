@@ -1,4 +1,5 @@
 import { AnimatePresence } from "framer-motion";
+import { memo } from "react";
 import type { CountrySummary } from "../domain/country.types";
 import { CountryCard } from "./CountryCard";
 
@@ -8,7 +9,11 @@ interface CountryGridProps {
   onToggleFavorite: (country: CountrySummary) => void;
 }
 
-export function CountryGrid({ countries, isFavorite, onToggleFavorite }: CountryGridProps) {
+export const CountryGrid = memo(function CountryGrid({
+  countries,
+  isFavorite,
+  onToggleFavorite,
+}: CountryGridProps) {
   return (
     <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
       <AnimatePresence initial={false}>
@@ -23,4 +28,4 @@ export function CountryGrid({ countries, isFavorite, onToggleFavorite }: Country
       </AnimatePresence>
     </ul>
   );
-}
+});
